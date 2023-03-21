@@ -8,10 +8,13 @@ class ohQueue {
   private:
     struct Student
     {
-        /* data */
+        
     };
 
     list<Student> queue;
+
+  public:
+
 };
 
 int main() {
