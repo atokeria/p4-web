@@ -263,7 +263,22 @@ public:
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
   void insert(Iterator i, const T &datum){
-    
+    if(i.node_ptr == nullptr){
+      push_back(datum);
+    }
+    else if(i.node_ptr == first && i.node_ptr == last){
+      push_front(datum);
+    }
+    else if(i.node_ptr == first){
+      push_front(datum);
+    }else{
+      Node *current = i.node_ptr;
+      Node *p = new Node;
+      p->datum = datum;
+      p->next = current;
+      p->prev = current->prev;
+      current->prev->next = p;
+    }
   }
 
 };//List
