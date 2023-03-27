@@ -17,38 +17,64 @@ class List {
   //OVERVIEW: a doubly-linked, double-ended list with Iterator interface
 public:
 
+  List()
+    :first(nullptr),last(nullptr){
+  }
+
+  ~List(){
+    clear();
+  }
+
+  List(const List<T> &other)
+    :first(nullptr),last(nullptr){
+    copy_all(other);
+  }
+
+  List & operator=(const List<T> &rhs){
+    if(this == &rhs){return *this;}else{
+      clear();
+      copy_all(rhs);
+      return *this;
+    }
+  }
+
   //EFFECTS:  returns true if the list is empty
   bool empty() const {
-    return first == nullptr;
+    return sizey == 0;
   }
 
   //EFFECTS: returns the number of elements in this List
   //HINT:    Traversing a list is really slow.  Instead, keep track of the size
   //         with a private member variable.  That's how std::list does it.
   int size() const{
-    return size;
+    return sizey;
   }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the first element in the list by reference
   T & front(){
-    return *first;
+    return first->datum;
   }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the last element in the list by reference
   T & back(){
-    return *last;
+    return last->datum;
   }
 
   //EFFECTS:  inserts datum into the front of the list
   void push_front(const T &datum){
+    ++sizey;
     Node *p = new Node;
-    p->prev = nullptr;
-    p->next = first->next;
-    first->next = p;
-    if (first->next = nullptr){
+    if(empty()){
+      first = p;
       last = p;
+      p->prev = nullptr;
+      p->next = nullptr;
+    }else{
+      p->next = first->next;
+      p->prev = nullptr;
+      first = p;
     }
   }
 
@@ -56,39 +82,47 @@ public:
   void push_back(const T &datum){
     Node *p = new Node;
     p->datum = datum;
-    p->prev = last;
     p->next = nullptr;
-    if (empty()){
+    if(empty()){
       first = last = p;
+      p->prev = nullptr;
+      ++sizey;
+    }else{
+      p->prev = last;
+      last->next = p;
+      last = p;
+      ++sizey;
     }
-    last->next = p;
-    last = p;
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
   void pop_front(){
+    --sizey;
    if(first == last){
     delete first;
     first = last = nullptr;
+   }else{
+     first = first->next;
+     delete first->prev;
+     first->prev = nullptr;
    }
-   first = first->next;
-   delete first->prev;
-   first->prev = nullptr;
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the back of the list
   void pop_back(){
+    --sizey;
     if(first == last){
       delete first;
       first = last = nullptr;
+    }else{
+      last = last->prev;
+      delete last->next;
+      last->next = nullptr;
     }
-    last = last->prev;
-    delete last->next;
-    last->next = nullptr;
   }
 
   //MODIFIES: may invalidate list iterators
@@ -97,6 +131,7 @@ public:
     while(!empty()){
       pop_back();
     }
+    sizey = 0;
   }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -113,17 +148,14 @@ private:
     T datum;
   };
 
+  int sizey = 0;
+
 
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
   void copy_all(const List<T> &other){
-    if(this == other){
-      exit;
-    }else{
-      clear();
-      for(Node *p = other.first; p; p->next){
-        push_back(p->datum);
-      }
+    for(Node *p = other.first; p != nullptr; p = p->next){
+      push_back(p->datum);
     }
   }
 
@@ -146,6 +178,8 @@ public:
   public:
     // This operator will be used to test your code. Do not modify it.
     // Requires that the current element is dereferenceable.
+
+
     Iterator& operator--() {
       assert(node_ptr);
       node_ptr = node_ptr->prev;
@@ -158,6 +192,19 @@ public:
       return *this;
     }
 
+    bool operator==(Iterator rhs) const{
+      return node_ptr == rhs.node_ptr;
+    }
+
+    bool operator!=(Iterator rhs) const{
+      return node_ptr != rhs.node_ptr;
+    }
+
+    T & operator*(){
+      assert(node_ptr);
+      return node_ptr->datum;
+    }
+
   private:
   friend class List;
     Node *node_ptr; //current Iterator position is a List node
@@ -165,12 +212,12 @@ public:
 
     // add any friend declarations here
     // construct an Iterator at a specific position
-    Iterator(Node *p){
-      :node_ptr(p)
+    Iterator(Node *p)
+      :node_ptr(p){
     }
 
-    Iterator(){
-      : node_ptr(nullptr)
+    Iterator()
+      :node_ptr(nullptr){
     }
   };//List::Iterator
   ////////////////////////////////////////
@@ -189,21 +236,35 @@ public:
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container
   void erase(Iterator i){
-    if(i.node_ptr->next == nullptr){
-      delete i;
-      exit;
-    }else{
-      Iterator prev = --i;
-      Iterator next = ++i;
-      prev.node_ptr->next = next.node_ptr;
-      next.node_ptr->prev = prev.node_ptr;
-      delete i;
+    if(i.node_ptr == first && i.node_ptr == last){
+      delete i.node_ptr;
+      first = nullptr;
+      last = nullptr;
+    }
+    else if(i.node_ptr == first){
+      first = first->next;
+      delete first->prev;
+      first->prev = nullptr;
+    }
+    else if(i.node_ptr == last){
+      last = last->prev;
+      delete last->next;
+      last->next = nullptr;
+    }
+    else{
+      Node *previous = i.node_ptr->prev;;
+      Node *nexty = i.node_ptr->next;
+      previous->next = nexty;
+      nexty->prev = previous;
+      delete i.node_ptr;
     }
   }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
-  void insert(Iterator i, const T &datum);
+  void insert(Iterator i, const T &datum){
+    
+  }
 
 };//List
 
