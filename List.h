@@ -74,6 +74,7 @@ public:
       ++sizey;
     }else{
       p->next = first->next;
+      first->next->prev = p;
       p->prev = nullptr;
       first = p;
       ++sizey;

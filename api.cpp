@@ -33,6 +33,7 @@ class ohQueue {
 };
 
 int main() {
-  string stuffy_stuff;
+  string stuffy1, stuffy2;
+  cin >> 
   while(stuffy_stuff != "Get" || stuffy_stuff != "POST")
 }
