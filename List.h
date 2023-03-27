@@ -73,8 +73,8 @@ public:
       p->next = nullptr;
       ++sizey;
     }else{
-      p->next = first->next;
-      first->next->prev = p;
+      p->next = first;
+      first->prev = p;
       p->prev = nullptr;
       first = p;
       ++sizey;
@@ -243,16 +243,19 @@ public:
       delete i.node_ptr;
       first = nullptr;
       last = nullptr;
+      --sizey;
     }
     else if(i.node_ptr == first){
       first = first->next;
       delete first->prev;
       first->prev = nullptr;
+      --sizey;
     }
     else if(i.node_ptr == last){
       last = last->prev;
       delete last->next;
       last->next = nullptr;
+      --sizey;
     }
     else{
       Node *previous = i.node_ptr->prev;;
@@ -260,8 +263,8 @@ public:
       previous->next = nexty;
       nexty->prev = previous;
       delete i.node_ptr;
+      --sizey;
     }
-    --sizey;
   }
 
   //REQUIRES: i is a valid iterator associated with this list
@@ -282,8 +285,8 @@ public:
       p->next = current;
       p->prev = current->prev;
       current->prev->next = p;
+      ++sizey;
     }
-    ++sizey;
   }
 
 };//List
