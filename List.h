@@ -261,7 +261,7 @@ public:
       nexty->prev = previous;
       delete i.node_ptr;
     }
-    sizey--;
+    --sizey;
   }
 
   //REQUIRES: i is a valid iterator associated with this list
@@ -283,6 +283,7 @@ public:
       p->prev = current->prev;
       current->prev->next = p;
     }
+    ++sizey;
   }
 
 };//List
