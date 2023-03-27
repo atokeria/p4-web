@@ -64,17 +64,19 @@ public:
 
   //EFFECTS:  inserts datum into the front of the list
   void push_front(const T &datum){
-    ++sizey;
     Node *p = new Node;
+    p->datum = datum;
     if(empty()){
       first = p;
       last = p;
       p->prev = nullptr;
       p->next = nullptr;
+      ++sizey;
     }else{
       p->next = first->next;
       p->prev = nullptr;
       first = p;
+      ++sizey;
     }
   }
 
