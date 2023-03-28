@@ -134,8 +134,7 @@ int main() {
       }
       else if(path == "/api/queue/head/"){
         queue.Get_apply_2();
-      }
-      else if(path == "/invalid/path/"){
+      }else{
         cout << "HTTP/1.1 400 Bad Request" << endl;
         cout << "Content-Type: application/json; charset=utf-8" << endl;
         cout << "Content-Length: " << 0 << endl;
@@ -143,10 +142,24 @@ int main() {
       }
     }
     else if(method == "POST"){
-      queue.Application_Post();
+      if(path == "/api/queue/tail/"){
+        queue.Application_Post();
+      }else{
+        cout << "HTTP/1.1 400 Bad Request" << endl;
+        cout << "Content-Type: application/json; charset=utf-8" << endl;
+        cout << "Content-Length: " << 0 << endl;
+        cout << endl;
+      }
     }
     else if(method == "DELETE"){
-      queue.Delete_application();
+      if(path == "/api/queue/head/"){
+        queue.Delete_application();
+      }else{
+        cout << "HTTP/1.1 400 Bad Request" << endl;
+        cout << "Content-Type: application/json; charset=utf-8" << endl;
+        cout << "Content-Length: " << 0 << endl;
+        cout << endl;
+      }
     }
   }
 }
