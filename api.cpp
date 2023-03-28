@@ -21,10 +21,10 @@ class ohQueue {
   public:
 
   ohQueue()
-   :queue(queue){
+   :queue(){
   }
 
-  void Application_Post(int position){
+  void Application_Post(){
     json in;
     cin >> in;
     Student student;
@@ -32,9 +32,9 @@ class ohQueue {
     student.location = in["location"];
     queue.push_back(student);
     json j2 = {
-      {"location", "student.location"},
-      {"position", position},
-      {"uniqname", "student.name"},
+      {"location", student.location},
+      {"position", queue.size()},
+      {"uniqname", student.name},
     };
     string str2 = j2.dump(4) + "\n";
     size_t content_length = str2.length();
@@ -57,7 +57,63 @@ class ohQueue {
     };
     string str2 = j2.dump(4) + "\n";
     cout << str2;
+  }
+
+  void Get_Apply_1(){
+    json j1;
+    json j2;
+    json for_real;
+    int j = 1;
+    for(std::list<Student>::iterator i = queue.begin(); i != queue.end(); i++){
+      j2 = {
+        {"location", i->location},
+        {"position", j},
+        {"uniqname", i->name}
+      };
+      j1.push_back(j2);
+      ++j;
+    }
+    for_real = {
+      {"count", queue.size()},
+      {"results", j1}
+    };
+    string str2 = for_real.dump(4) + "\n";
+    size_t content_length = str2.length();
+    cout << "HTTP/1.1 200 OK" << endl;
+    cout << "Content-Type: application/json; charset=utf-8" << endl;
+    cout << "Content-Length: " << content_length << endl;
     cout << endl;
+    cout << str2;
+  }
+
+  void Get_apply_2(){
+    std::list<Student>::iterator i = queue.begin();
+    json j2 = {
+      {"location", i->location},
+      {"position", 1},
+      {"uniqname", i->name}
+    };
+    string str2 = j2.dump(4) + "\n";
+    size_t content_length = str2.length();
+    cout << "HTTP/1.1 200 OK" << endl;
+    cout << "Content-Type: application/json; charset=utf-8" << endl;
+    cout << "Content-Length: " << content_length << endl;
+    cout << endl;
+    cout << str2;
+  }
+
+  void Delete_application(){
+    if(queue.size() == 0){
+      cout << "HTTP/1.1 400 Bad Request" << endl;
+      cout << "Content-Type: application/json; charset=utf-8" << endl;
+      cout << "Content-Length: " << 0 << endl;
+    }else{
+      queue.pop_front();
+      cout << "HTTP/1.1 204 No Content" << endl;
+      cout << "Content-Type: application/json; charset=utf-8" << endl;
+      cout << "Content-Length: " << 0 << endl;
+      cout << endl;
+    }
   }
 
 
@@ -65,8 +121,32 @@ class ohQueue {
 };
 
 int main() {
+  ohQueue queue;
   string method,path,dumpy;
   while(cin >> method >> path){
     cin >> dumpy >> dumpy >> dumpy >> dumpy >> dumpy >> dumpy >> dumpy >> dumpy;
+    if(method == "GET"){
+      if(path == "/api/"){
+        queue.Get_Apply_0();
+      }
+      else if(path == "/api/queue/"){
+        queue.Get_Apply_1();
+      }
+      else if(path == "/api/queue/head/"){
+        queue.Get_apply_2();
+      }
+      else if(path == "/invalid/path/"){
+        cout << "HTTP/1.1 400 Bad Request" << endl;
+        cout << "Content-Type: application/json; charset=utf-8" << endl;
+        cout << "Content-Length: " << 0 << endl;
+        cout << endl;
+      }
+    }
+    else if(method == "POST"){
+      queue.Application_Post();
+    }
+    else if(method == "DELETE"){
+      queue.Delete_application();
+    }
   }
 }
