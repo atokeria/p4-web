@@ -227,6 +227,18 @@ TEST(test_empty_list2) {
     // ASSERT_EQUAL(nullptr,empty_list.back());
 }
 
+// Testing empty function
+TEST(test_empty) {
+    List<int> empty_list;
+
+    empty_list.push_back(1);
+    empty_list.push_back(2);
+    empty_list.push_back(3);
+    empty_list.clear();
+
+    ASSERT_TRUE(empty_list.empty());
+}
+
 //// Testing iterator functions
 
 // Testing iterator begin with one element
@@ -332,11 +344,8 @@ TEST(test_iterator_inser1) {
 TEST(test_iterator_inser2) {
     List<int> listinsert2;
     listinsert2.push_back(1);
-    cout << "a" << endl;
     List<int>::Iterator inserttester = listinsert2.begin();
-    cout << *inserttester << endl;
     listinsert2.insert(inserttester, 2);
-    cout << "b" << endl;
 
     ASSERT_EQUAL(2, listinsert2.front());
     ASSERT_EQUAL(1, listinsert2.back());
@@ -418,7 +427,74 @@ TEST(test_iterator_big3) {
 
     ASSERT_EQUAL(1,*bigtester2);
     ASSERT_EQUAL(1,*bigtester3);
+}
+
+// Testing iterator ++
+TEST(test_iterator_plus_plus) {
+    List<int> plusser;
+    plusser.push_back(1);
+    plusser.push_back(2);
+    plusser.push_back(3);
+
+    List<int>::Iterator plustester = plusser.begin();
+    ++plustester;
+    ASSERT_EQUAL(3,*++plustester);
+}
+
+// Testing iterator --
+TEST(test_iterator_minus_minus) {
+    List<int> plusser;
+    plusser.push_back(1);
+    plusser.push_back(2);
+    plusser.push_back(3);
+
+    List<int>::Iterator plustester = plusser.begin();
+    ++plustester;
+    ASSERT_EQUAL(1,*--plustester);
+}
+
+// Testing iterator that its all connected
+TEST(test_iterator_connect1) {
+    List<int> connect;
+    connect.push_back(1);
+    connect.push_back(2);
+    connect.push_back(3);
+    connect.push_back(4);
+    connect.push_back(5);
     
+    int counter = 0;
+    for(List<int>::Iterator plustester = connect.begin(); plustester != connect.end(); ++plustester){
+        counter++;
+    }
+
+    ASSERT_EQUAL(counter,connect.size());
+}
+
+// Testing iterator ==
+TEST(test_iterator_equal_equal) {
+    List<int> equals;
+    equals.push_back(1);
+    equals.push_back(2);
+    equals.push_back(3);
+
+    List<int>::Iterator equaltester = equals.begin();
+    List<int>::Iterator equaltester2 = equals.begin();
+
+    ASSERT_TRUE(equaltester == equaltester2);
+}
+
+// Testing iterator !=
+TEST(test_iterator_not_equal) {
+    List<int> notequals;
+    notequals.push_back(1);
+    notequals.push_back(2);
+    notequals.push_back(3);
+
+    List<int>::Iterator notequaltester = notequals.begin();
+    List<int>::Iterator notequaltester2 = notequals.begin();
+    ++notequaltester2;
+
+    ASSERT_TRUE(notequaltester != notequaltester2);
 }
 
 TEST_MAIN()
