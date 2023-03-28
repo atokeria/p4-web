@@ -285,6 +285,7 @@ public:
       p->next = current;
       p->prev = current->prev;
       current->prev->next = p;
+      current->prev = p;
       ++sizey;
     }
   }
