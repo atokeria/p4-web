@@ -662,7 +662,7 @@ TEST(stupid){
     int size = 0;
     my_list.empty();
     my_list.size();
-    cout << (my_list.size() == size) << endl;
+    ASSERT_TRUE(my_list.size() == size);
 
     my_list.push_front(42);
     my_list.push_back(42);
