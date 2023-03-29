@@ -16,6 +16,10 @@ TEST(test_stub) {
 TEST(test_empty_list) {
     List<int> empty_list;
     ASSERT_TRUE(empty_list.empty());
+    ASSERT_TRUE(empty_list.size() == 0);
+    empty_list.push_back(1);
+    ASSERT_TRUE(!empty_list.empty());
+    ASSERT_TRUE(empty_list.size() == 1);
 }
 
 // Testing initialisation of one element and test of push back
@@ -24,6 +28,7 @@ TEST(test_list_default_ctor) {
 
     one_list.push_back(1);
     ASSERT_EQUAL(1,one_list.size());
+    ASSERT_EQUAL(1,*one_list.begin());
 }
 
 // Testing initialisation of 10 with 2 of the same elements
@@ -46,7 +51,7 @@ TEST(test_same_element_init) {
 }
 
 // Testing the push front function
-TEST(test_push_front) {
+TEST(test_push_front1) {
     List<int> front_list;
 
     front_list.push_back(1);
@@ -54,6 +59,18 @@ TEST(test_push_front) {
     front_list.push_front(10);
 
     ASSERT_EQUAL(10,front_list.front());
+    ASSERT_EQUAL(3,front_list.size());
+
+}
+
+// Testing the push front function
+TEST(test_push_front2) {
+    List<int> front_list;
+
+    front_list.push_front(10);
+
+    ASSERT_EQUAL(10,front_list.front());
+    ASSERT_EQUAL(1,front_list.size());
 }
 
 // Testing the front and back functions with 1 variable
@@ -202,7 +219,19 @@ TEST(test_pop_front4) {
 }
 
 // Testing empty function
-TEST(test_empty_list1) {
+TEST(test_clear_list) {
+    List<int> empty_list;
+
+    empty_list.clear();
+
+    ASSERT_EQUAL(0,empty_list.size());
+    ASSERT_TRUE(empty_list.empty());
+    // ASSERT_EQUAL(nullptr,empty_list.front());
+    // ASSERT_EQUAL(nullptr,empty_list.back());
+}
+
+// Testing empty function
+TEST(test_clear_list1) {
     List<int> empty_list1;
 
     empty_list1.push_back(1);
@@ -214,7 +243,7 @@ TEST(test_empty_list1) {
 }
 
 // Testing empty function
-TEST(test_empty_list2) {
+TEST(test_clear_list2) {
     List<int> empty_list2;
 
     empty_list2.push_back(1);
@@ -228,7 +257,7 @@ TEST(test_empty_list2) {
 }
 
 // Testing empty function
-TEST(test_empty) {
+TEST(test_empty1) {
     List<int> empty_list;
 
     empty_list.push_back(1);
@@ -239,7 +268,70 @@ TEST(test_empty) {
     ASSERT_TRUE(empty_list.empty());
 }
 
+// Testing empty function
+TEST(test_empty2) {
+    List<int> empty_list;
+
+    empty_list.push_back(1);
+    empty_list.push_back(2);
+    empty_list.push_back(3);
+
+    ASSERT_TRUE(!empty_list.empty());
+}
+
+// Testing big 3
+TEST(test_big3){
+    List<int> big1;
+
+    big1.push_back(1);
+    big1.push_back(2);
+    big1.push_back(3);
+
+    List<int> big2 = big1;
+    List<int> big3(big1);
+
+    ASSERT_EQUAL(1,big2.front());
+    ASSERT_EQUAL(1,big3.front());
+}
+
+// Testing big 3
+TEST(test_big32){
+    List<int> big1;
+
+    big1.push_back(1);
+
+    List<int> big2 = big1;
+    List<int> big3(big1);
+
+    ASSERT_EQUAL(1,big2.front());
+    ASSERT_EQUAL(1,big3.front());
+}
+
+// Testing many function
+TEST(test_empty3) {
+    List<int> many;
+
+    many.push_back(1);
+    many.push_back(2);
+    many.push_back(3);
+
+    ASSERT_TRUE(!many.empty());
+
+    many.clear();
+    ASSERT_TRUE(many.empty());
+
+
+}
+
 //// Testing iterator functions
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
 
 // Testing iterator begin with one element
 TEST(test_iterator_begin1) {
@@ -270,6 +362,9 @@ TEST(test_iterator_end1) {
     List<int>::Iterator endtesterhelper = listend1.begin();
 
     ASSERT_NOT_EQUAL(endtesterhelper,endtester);
+
+    //++endtester;
+    //ASSERT_EQUAL(endtesterhelper,endtester);
 }
 
 // Testing iterator end with three element
@@ -330,6 +425,21 @@ TEST(test_iterator_erase3) {
     ASSERT_EQUAL(3,*erasetester2);
 }
 
+// Testing iterator erase whilst sending in the iterator not for first
+TEST(test_iterator_erase4) {
+    List<int> listerase4;
+    listerase4.push_back(1);
+    listerase4.push_back(2);
+    listerase4.push_back(3);
+
+    List<int>::Iterator erasetester = listerase4.begin();
+    ++++erasetester;
+    listerase4.erase(erasetester);
+
+    ASSERT_EQUAL(2,listerase4.size());
+    ASSERT_EQUAL(2,listerase4.back());
+}
+
 // Testing iterator insert with no elements
 TEST(test_iterator_inser1) {
     List<int> listinsert1;
@@ -338,6 +448,33 @@ TEST(test_iterator_inser1) {
 
     ASSERT_EQUAL(1, listinsert1.front());
     ASSERT_EQUAL(1, listinsert1.size());
+}
+
+// Testing iterator insert with no elements
+TEST(test_iterator_inser10) {
+    List<int> listinsert1;
+    List<int>::Iterator inserttester = listinsert1.begin();
+    listinsert1.insert(inserttester, 1);
+    listinsert1.insert(inserttester, 2);
+    listinsert1.insert(inserttester, 3);
+
+    ASSERT_EQUAL(1, listinsert1.front());
+    ASSERT_EQUAL(3, listinsert1.back());
+    ASSERT_EQUAL(3, listinsert1.size());
+
+    inserttester = listinsert1.begin();
+    ASSERT_TRUE(*inserttester == 1);
+    ++inserttester;
+    ASSERT_TRUE(*inserttester == 2);
+    ++inserttester;
+    ASSERT_TRUE(*inserttester == 3);
+
+    listinsert1.insert(inserttester, 5);
+    ASSERT_TRUE(*inserttester == 3);
+    --inserttester;
+    ASSERT_TRUE(*inserttester == 5);
+    --inserttester;
+    ASSERT_TRUE(*inserttester == 2);
 }
 
 // Testing iterator insert with one element
@@ -427,6 +564,10 @@ TEST(test_iterator_big3) {
 
     ASSERT_EQUAL(1,*bigtester2);
     ASSERT_EQUAL(1,*bigtester3);
+
+    ++bigtester2;
+    ASSERT_EQUAL(2, * bigtester2);
+    
 }
 
 // Testing iterator ++
@@ -438,6 +579,7 @@ TEST(test_iterator_plus_plus) {
 
     List<int>::Iterator plustester = plusser.begin();
     ++plustester;
+    ASSERT_EQUAL(2,*plustester);
     ASSERT_EQUAL(3,*++plustester);
 }
 
@@ -450,6 +592,7 @@ TEST(test_iterator_minus_minus) {
 
     List<int>::Iterator plustester = plusser.begin();
     ++plustester;
+    ASSERT_EQUAL(2,*plustester);
     ASSERT_EQUAL(1,*--plustester);
 }
 
@@ -463,7 +606,8 @@ TEST(test_iterator_connect1) {
     connect.push_back(5);
     
     int counter = 0;
-    for(List<int>::Iterator plustester = connect.begin(); plustester != connect.end(); ++plustester){
+    for(List<int>::Iterator plustester = connect.begin();
+                plustester != connect.end(); ++plustester){
         counter++;
     }
 
@@ -495,6 +639,87 @@ TEST(test_iterator_not_equal) {
     ++notequaltester2;
 
     ASSERT_TRUE(notequaltester != notequaltester2);
+}
+
+// Testing iterator loopy
+TEST(test_iterator_not_equal2) {
+    List<int> loop;
+    loop.push_back(1);
+    loop.push_back(2);
+    loop.push_back(3);
+
+    int ass = 0;
+    for (List<int>::Iterator looptester = loop.begin();
+            looptester != loop.end(); ++looptester){
+        ass++;
+    }
+    ASSERT_EQUAL(ass, 3);
+}
+
+/////////////////////////////////////////////
+
+TEST(stupid){
+    List<int> my_list;
+
+    int size = 0;
+    my_list.empty();
+    my_list.size();
+    cout << (my_list.size() == size) << endl;
+
+    my_list.push_front(42);
+    my_list.push_back(42);
+
+    my_list.front() = 73;
+    my_list.back() = 73;
+
+    my_list.pop_front();
+    my_list.pop_back();
+
+    List<int> list2(my_list);
+    list2 = my_list;
+
+    List<int>::Iterator iter = my_list.begin();
+    my_list.insert(iter, 42);
+    iter = my_list.begin();
+    my_list.erase(iter);
+    iter = my_list.begin();
+
+    List<int>::Iterator iter2 = my_list.end();
+    const List<int>::Iterator iter3 = iter2;
+
+    bool b = iter == iter2;
+    b = iter3 == my_list.end();
+    b = my_list.end() == iter3;
+    my_list.push_front(42);
+    my_list.push_back(42);
+    iter = my_list.begin();
+    b = iter != iter2;
+    b = iter3 != my_list.end();
+    b = my_list.end() != iter3;
+    cout << b << endl;
+    ++iter;
+
+    cout << *iter << endl;
+
+    List<int>::Iterator iter_cpy(iter);
+    iter_cpy = iter;
+
+    cout << *++--iter << endl;
+    cout << *--++my_list.begin() << endl;
+
+    my_list.insert(my_list.begin(), 3);
+    my_list.erase(my_list.begin());
+
+    List<int> list3;
+    list3.push_back(3);
+    cout << *list3.begin() << endl;
+
+    List<int> list4;
+    list4.push_back(4);
+    cout << list4.size() << endl;
+
+    my_list.clear();
+
 }
 
 TEST_MAIN()
