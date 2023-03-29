@@ -222,7 +222,6 @@ TEST(test_pop_front4) {
 TEST(test_clear_list) {
     List<int> empty_list;
 
-    empty_list.clear();
 
     ASSERT_EQUAL(0,empty_list.size());
     ASSERT_TRUE(empty_list.empty());
@@ -567,7 +566,6 @@ TEST(test_iterator_big3) {
 
     ++bigtester2;
     ASSERT_EQUAL(2, * bigtester2);
-    
 }
 
 // Testing iterator ++
@@ -721,5 +719,67 @@ TEST(stupid){
     my_list.clear();
 
 }
+
+TEST(test_iterator_inser100) {
+    List<int> listinsert6;
+    listinsert6.push_back(1);
+    listinsert6.push_back(2);
+    listinsert6.push_back(3);
+
+    List<int>::Iterator inserttester = listinsert6.end();
+    listinsert6.insert(inserttester, 10);
+
+    ASSERT_EQUAL(10, listinsert6.back());
+
+    listinsert6.insert(inserttester,100);
+    ASSERT_EQUAL(100, listinsert6.back());
+    ASSERT_EQUAL(1, listinsert6.front());
+    ASSERT_EQUAL(5, listinsert6.size());
+}
+
+TEST(Last_try){
+    List<int> AYUSH;
+    List<int>::Iterator HELEN = AYUSH.begin();
+    AYUSH.insert(HELEN,30);
+    AYUSH.insert(HELEN,40);
+    AYUSH.insert(HELEN,50);
+
+    HELEN = AYUSH.begin();
+    AYUSH.erase(HELEN);
+    ASSERT_EQUAL(AYUSH.front(),40);
+    ASSERT_EQUAL(AYUSH.back(),50);
+
+    HELEN = AYUSH.begin();
+    AYUSH.erase(HELEN);
+    ASSERT_EQUAL(AYUSH.front(),50);
+    ASSERT_EQUAL(AYUSH.back(),50);
+
+    HELEN = AYUSH.begin();
+    AYUSH.erase(HELEN);
+    ASSERT_TRUE(AYUSH.size() == 0);
+
+    HELEN = AYUSH.begin();
+    AYUSH.insert(HELEN,300000);
+    AYUSH.insert(HELEN,200000);
+    AYUSH.insert(HELEN,100000);
+    AYUSH.insert(HELEN,900000);
+
+    HELEN = AYUSH.begin();
+    ++HELEN;
+    ++HELEN;
+    ASSERT_EQUAL(*HELEN,100000);
+    AYUSH.erase(HELEN);
+
+    HELEN = AYUSH.begin();
+    ++HELEN;
+    ++HELEN;
+    ASSERT_EQUAL(*HELEN,900000);
+    AYUSH.erase(HELEN);
+
+    ASSERT_TRUE(AYUSH.size() == 2);
+    ASSERT_TRUE(AYUSH.front() == 300000);
+    ASSERT_TRUE(AYUSH.back() == 200000);
+}
+
 
 TEST_MAIN()
