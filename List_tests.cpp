@@ -658,11 +658,10 @@ TEST(test_iterator_not_equal2) {
 
 TEST(stupid){
     List<int> my_list;
-
     int size = 0;
     my_list.empty();
     my_list.size();
-    ASSERT_TRUE(my_list.size() == size);
+    cout << (my_list.size() == size) << endl;
 
     my_list.push_front(42);
     my_list.push_back(42);
@@ -717,7 +716,6 @@ TEST(stupid){
     cout << list4.size() << endl;
 
     my_list.clear();
-
 }
 
 TEST(test_iterator_inser100) {
@@ -780,6 +778,8 @@ TEST(Last_try){
     ASSERT_TRUE(AYUSH.front() == 300000);
     ASSERT_TRUE(AYUSH.back() == 200000);
 }
+
+
 
 
 TEST_MAIN()

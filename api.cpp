@@ -24,6 +24,13 @@ class ohQueue {
    :queue(){
   }
 
+  void error_400(){
+    cout << "HTTP/1.1 400 Bad Request" << endl;
+    cout << "Content-Type: application/json; charset=utf-8" << endl;
+    cout << "Content-Length: " << 0 << endl;
+    cout << endl;
+  }
+
   void Application_Post(){
     json in;
     cin >> in;
@@ -60,53 +67,68 @@ class ohQueue {
   }
 
   void Get_Apply_1(){
-    json j1;
-    json j2;
-    json for_real;
-    int j = 1;
-    for(std::list<Student>::iterator i = queue.begin(); i != queue.end(); i++){
-      j2 = {
-        {"location", i->location},
-        {"position", j},
-        {"uniqname", i->name}
+    if(queue.size() == 0){
+      cout << "HTTP/1.1 400 Bad Request" << endl;
+      cout << "Content-Type: application/json; charset=utf-8" << endl;
+      cout << "Content-Length: " << 40 << endl;
+      cout << endl;
+      json j8 = {
+        {"count", 0},
+        {"results", nullptr}
       };
-      j1.push_back(j2);
-      ++j;
+      string str2 = j8.dump(4) + "\n";
+      cout << str2 << endl;
+    }else{
+      json j1;
+      json j2;
+      json for_real;
+      int j = 1;
+      for(std::list<Student>::iterator i = queue.begin(); i != queue.end(); i++){
+       j2 = {
+          {"location", i->location},
+          {"position", j},
+          {"uniqname", i->name}
+        };
+        j1.push_back(j2);
+        ++j;
+      }
+      for_real = {
+        {"count", queue.size()},
+        {"results", j1}
+      };
+      string str2 = for_real.dump(4) + "\n";
+      size_t content_length = str2.length();
+      cout << "HTTP/1.1 200 OK" << endl;
+      cout << "Content-Type: application/json; charset=utf-8" << endl;
+      cout << "Content-Length: " << content_length << endl;
+      cout << endl;
+      cout << str2;
     }
-    for_real = {
-      {"count", queue.size()},
-      {"results", j1}
-    };
-    string str2 = for_real.dump(4) + "\n";
-    size_t content_length = str2.length();
-    cout << "HTTP/1.1 200 OK" << endl;
-    cout << "Content-Type: application/json; charset=utf-8" << endl;
-    cout << "Content-Length: " << content_length << endl;
-    cout << endl;
-    cout << str2;
   }
 
   void Get_apply_2(){
-    std::list<Student>::iterator i = queue.begin();
-    json j2 = {
-      {"location", i->location},
-      {"position", 1},
-      {"uniqname", i->name}
-    };
-    string str2 = j2.dump(4) + "\n";
-    size_t content_length = str2.length();
-    cout << "HTTP/1.1 200 OK" << endl;
-    cout << "Content-Type: application/json; charset=utf-8" << endl;
-    cout << "Content-Length: " << content_length << endl;
-    cout << endl;
-    cout << str2;
+    if(queue.size() == 0){
+      error_400();
+    }else{
+      std::list<Student>::iterator i = queue.begin();
+      json j2 = {
+        {"location", i->location},
+        {"position", 1},
+        {"uniqname", i->name}
+      };
+      string str2 = j2.dump(4) + "\n";
+      size_t content_length = str2.length();
+      cout << "HTTP/1.1 200 OK" << endl;
+      cout << "Content-Type: application/json; charset=utf-8" << endl;
+      cout << "Content-Length: " << content_length << endl;
+      cout << endl;
+      cout << str2;
+    }
   }
 
   void Delete_application(){
     if(queue.size() == 0){
-      cout << "HTTP/1.1 400 Bad Request" << endl;
-      cout << "Content-Type: application/json; charset=utf-8" << endl;
-      cout << "Content-Length: " << 0 << endl;
+      error_400();
     }else{
       queue.pop_front();
       cout << "HTTP/1.1 204 No Content" << endl;
